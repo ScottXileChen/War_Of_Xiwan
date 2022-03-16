@@ -15,6 +15,7 @@ namespace WOX.Utils
                 {
                     Vector3 center = flowField.GridStartPosition + new Vector3(flowField.CellRadius * 2f * x + flowField.CellRadius, 0f, flowField.CellRadius * 2f * y + flowField.CellRadius);
                     Vector3 size = Vector3.one * flowField.CellRadius * 2f;
+                    size.y = 0;
                     Gizmos.DrawWireCube(center, size);
                 }
             }

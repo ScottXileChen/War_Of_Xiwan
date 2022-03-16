@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace WOX.FlowField
 {
+    [RequireComponent(typeof(BoxCollider))]
     public class GridController : MonoBehaviour
     {
         public enum DebugDrawWay
@@ -14,8 +15,6 @@ namespace WOX.FlowField
         }
 
         [Header("Attribute Info")]
-        [SerializeField]
-        private Camera lookCamera = null;
         public Vector2 gridStartPosition = Vector2.zero;
         [Min(0)]
         public Vector2Int gridSize = Vector2Int.one;
@@ -29,7 +28,16 @@ namespace WOX.FlowField
 
         public FlowField CurrentFlowField { get; private set; }
 
+        private BoxCollider boxCollider;
+
         private bool initialized = false;
+
+        private void Awake()
+        {
+            boxCollider = GetComponent<BoxCollider>();
+            boxCollider.size = new Vector3(gridSize.x, 0f, gridSize.y);
+            boxCollider.center = boxCollider.size / 2 + new Vector3(gridStartPosition.x, 0f, gridStartPosition.y);
+        }
 
         private void InitializeFlowField()
         {
@@ -44,22 +52,39 @@ namespace WOX.FlowField
             {
                 InitializeFlowField();
 
-                Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
-                Vector3 worldMousePosition = lookCamera.ScreenToWorldPoint(mousePosition);
-
-                Cell dc = CurrentFlowField.GetCellFromWorldPosition(worldMousePosition);
-                CurrentFlowField.CreateIntegrationField(dc);
-                CurrentFlowField.CreateFlowField();
+                int layer = LayerMask.GetMask("FlowFied");
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit raycastHit, layer))
+                {
+                    Cell dc = CurrentFlowField.GetCellFromWorldPosition(raycastHit.point);
+                    CurrentFlowField.CreateIntegrationField(dc);
+                    CurrentFlowField.CreateFlowField();
+                }
 
                 initialized = true;
             }
         }
 
-        private void OnDrawGizmos()
+        //private void OnDrawGizmos()
+        //{
+        //    if (debugDrawEnable && initialized)
+        //    {
+        //        WOX.Utils.DebugRendererHelper.DrawGrid(CurrentFlowField, Color.red);
+        //    }
+        //}
+
+        private void OnDrawGizmosSelected()
         {
-            if (debugDrawEnable && initialized)
+            Gizmos.color = Color.red;
+            for (int x = 0; x < gridSize.x; ++x)
             {
-                WOX.Utils.DebugRendererHelper.DrawGrid(CurrentFlowField, Color.red);
+                for (int y = 0; y < gridSize.y; ++y)
+                {
+                    Vector3 center = new Vector3(gridStartPosition.x, 0f, gridStartPosition.y) + new Vector3(cellRadius * 2f * x + cellRadius, 0f, cellRadius * 2f * y + cellRadius);
+                    Vector3 size = Vector3.one * cellRadius * 2f;
+                    size.y = 0;
+                    Gizmos.DrawWireCube(center, size);
+                }
             }
         }
 
