@@ -48,21 +48,21 @@ namespace WOX.FlowField
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                InitializeFlowField();
+            //if (Input.GetMouseButtonDown(0))
+            //{
+            //    InitializeFlowField();
 
-                int layer = LayerMask.GetMask("FlowFied");
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit raycastHit, layer))
-                {
-                    Cell dc = CurrentFlowField.GetCellFromWorldPosition(raycastHit.point);
-                    CurrentFlowField.CreateIntegrationField(dc);
-                    CurrentFlowField.CreateFlowField();
-                }
+            //    int layer = LayerMask.GetMask("FlowFied");
+            //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //    if (Physics.Raycast(ray, out RaycastHit raycastHit, layer))
+            //    {
+            //        Cell dc = CurrentFlowField.GetCellFromWorldPosition(raycastHit.point);
+            //        CurrentFlowField.CreateIntegrationField(dc);
+            //        CurrentFlowField.CreateFlowField();
+            //    }
 
-                initialized = true;
-            }
+            //    initialized = true;
+            //}
         }
 
         //private void OnDrawGizmos()

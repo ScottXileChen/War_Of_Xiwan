@@ -19,6 +19,7 @@ namespace WOX.FlowField
         public float CellRadius { get; private set; }
 
         private float cellDiameter;
+        public Cell DestinationCell { get; private set; }
 
         public FlowField(Vector3 gridStartPosition, Vector2Int gridSize, float cellRadius)
         {
@@ -68,6 +69,7 @@ namespace WOX.FlowField
 
         public void CreateIntegrationField(Cell destinationCell)
         {
+            DestinationCell = destinationCell;
             destinationCell.Cost = 0;
             destinationCell.BestCost = 0;
 
